@@ -123,11 +123,11 @@ function nextPhase() {
 function emergencyStop() {
     isEmergencyStopped = true;
     
-    // Clear the running timer
-    if (trafficInterval) {
-        clearTimeout(trafficInterval);
-        trafficInterval = null;
-    }
+    // BUG: Timer not cleared properly in emergency stop either
+    // if (trafficInterval) {
+    //     clearTimeout(trafficInterval);
+    //     trafficInterval = null;
+    // }
     
     // Set all lights to red with blinking animation
     setLight(northLight, 'red');
@@ -135,12 +135,12 @@ function emergencyStop() {
     setLight(eastLight, 'red');
     setLight(westLight, 'red');
     
-    // BUG: Emergency blinking doesn't work because elements are null
+    // BUG: Emergency blinking classes not being added
     // Add blinking effect to all red lights
-    northLight.querySelector('.red').classList.add('emergency-blink');
-    southLight.querySelector('.red').classList.add('emergency-blink');
-    eastLight.querySelector('.red').classList.add('emergency-blink');
-    westLight.querySelector('.red').classList.add('emergency-blink');
+    // northLight.querySelector('.red').classList.add('emergency-blink');
+    // southLight.querySelector('.red').classList.add('emergency-blink');
+    // eastLight.querySelector('.red').classList.add('emergency-blink');
+    // westLight.querySelector('.red').classList.add('emergency-blink');
     
     updateStatus('EMERGENCY STOP - All Red');
     console.log('Emergency stop activated');
@@ -150,11 +150,11 @@ function emergencyStop() {
 function resetSystem() {
     isEmergencyStopped = false;
     
-    // Clear any running timer
-    if (trafficInterval) {
-        clearTimeout(trafficInterval);
-        trafficInterval = null;
-    }
+    // BUG: Timer not cleared properly - can cause multiple timers running
+    // if (trafficInterval) {
+    //     clearTimeout(trafficInterval);
+    //     trafficInterval = null;
+    // }
     
     // Start from North/South green
     currentPhase = 0;
@@ -166,28 +166,12 @@ function resetSystem() {
     console.log('Traffic system reset');
 }
 
-// DEBUGGING WALKTHROUGH: Event Listeners and DOM Timing
-//
-// PROBLEM: The buttons don't respond when clicked
-//
-// INVESTIGATION STEPS:
-// 1. Open browser console (F12) and look for error messages
-// 2. Try clicking the emergency stop button - do you see any errors?
-// 3. Check: Are we trying to add event listeners before the elements exist?
-//
-// UNDERSTANDING THE ISSUE:
-// JavaScript runs immediately when the browser reads it, but the HTML elements
-// might not be created yet when the script runs. This is called a "timing issue."
-//
-// SOLUTION HINTS:
-// - Look up "DOMContentLoaded" event in your Scrimba notes
-// - All DOM interactions should happen AFTER the page is fully loaded
-// - The event listeners AND the initial system startup should be wrapped in this event
+// BUG: Event listeners and system startup happen immediately when script loads
+// This will cause errors because the HTML elements don't exist yet when script is in <head>
 
-// BUG: Event listeners added immediately, before DOM is ready  
 emergencyButton.addEventListener('click', emergencyStop);
 resetButton.addEventListener('click', resetSystem);
 
-// BUG: System starts immediately, but DOM elements don't exist yet
+// Start the traffic system immediately
 resetSystem();
 console.log('Traffic system started');
