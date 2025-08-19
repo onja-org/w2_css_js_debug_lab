@@ -246,9 +246,12 @@ By the end of this lab, you should understand:
 ## Bonus Challenges
 
 If you finish early, try these enhancements:
-- Add sound effects when lights change
 - Create a "rush hour" mode with faster cycling
 - Add a manual override mode where you can click lights to change them
 - Style the intersection to look more realistic with lanes and turn arrows
+
+## Totally Stuck?
+
+The solution is available in the `solution` branch of this repository. [Here is a guide](https://www.howtogeek.com/789268/how-to-switch-branches-in-github/) on how to switch branches if you need help. However, try to solve the problems on your own first! Use the hints provided in the README and the comments in the code to guide you through the debugging process.
 
 Good luck debugging! Remember: every developer spends a lot of time debugging - it's a core skill that gets better with practice.
