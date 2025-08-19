@@ -158,96 +158,37 @@ h1 {
   box-shadow: 0 0 15px currentColor;
 }
 
-.light[data-color="red"] {
+.light.red {
   background-color: #ff4444;
   color: #ff4444;
 }
 
-.light[data-color="yellow"] {
+.light.yellow {
   background-color: #ffff44;
   color: #ffff44;
 }
 
-.light[data-color="green"] {
+.light.green {
   background-color: #44ff44;
   color: #44ff44;
 }
 
-/* Pedestrian Signals */
-.pedestrian-signal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  background-color: #222;
-  border: 2px solid #666;
-  border-radius: 8px;
-  padding: 12px 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  min-width: 90px;
-  z-index: 2;
+/* Emergency blinking animation */
+.light.emergency-blink {
+  animation: emergency-flash 1s infinite;
 }
 
-.ped-display {
-  background-color: #111;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  min-height: 60px;
-  justify-content: center;
+@keyframes emergency-flash {
+  0%, 50% {
+    opacity: 1;
+    box-shadow: 0 0 15px #ff4444;
+  }
+  51%, 100% {
+    opacity: 0.3;
+    box-shadow: none;
+  }
 }
 
-.ped-light {
-  font-size: 20px;
-  opacity: 0.2;
-  transition: all 0.3s ease;
-}
-
-.ped-light.active {
-  opacity: 1;
-  text-shadow: 0 0 8px currentColor;
-}
-
-.ped-light.dont-walk {
-  color: #ff4444;
-}
-
-.ped-light.walk {
-  color: #44ff44;
-}
-
-.ped-button {
-  background-color: #444;
-  color: white;
-  border: 2px solid #666;
-  border-radius: 4px;
-  padding: 6px 8px;
-  cursor: pointer;
-  font-size: 10px;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.ped-button:hover {
-  background-color: #555;
-  border-color: #888;
-}
-
-.ped-button:active {
-  background-color: #666;
-}
-
-.ped-button.pressed {
-  background-color: #ffff44;
-  color: #333;
-  border-color: #ffff44;
-}
 
 /* Control Panel */
 .control-panel {

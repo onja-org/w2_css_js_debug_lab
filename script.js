@@ -1,281 +1,151 @@
-// Traffic Management System JavaScript
+// Simple Traffic Management System
 
-class TrafficSystem {
-    constructor() {
-        // Traffic light elements
-        this.lights = {
-            north: document.getElementById('light-north'),
-            south: document.getElementById('light-south'),
-            east: document.getElementById('light-east'),
-            west: document.getElementById('light-west')
-        };
+// Get references to the traffic lights
+const northLight = document.getElementById("light-north");
+const southLight = document.getElementById("light-south");
+const eastLight = document.getElementById("light-east");
+const westLight = document.getElementById("light-west");
 
-        // Pedestrian signal elements
-        this.pedSignals = {
-            north: document.getElementById('ped-north'),
-            south: document.getElementById('ped-south'),
-            east: document.getElementById('ped-east'),
-            west: document.getElementById('ped-west')
-        };
+// Get control elements
+const emergencyButton = document.getElementById("emergency-stop");
+const resetButton = document.getElementById("reset-system");
+const statusDisplay = document.getElementById("current-phase");
 
-        // Control elements
-        this.emergencyButton = document.getElementById('emergency-stop');
-        this.resetButton = document.getElementById('reset-system');
-        this.statusDisplay = document.getElementById('current-phase');
-        this.pedButtons = document.querySelectorAll('.ped-button');
+// Traffic system state
+let currentPhase = 0; // 0=NorthSouth Green, 1=NorthSouth Yellow, 2=EastWest Green, 3=EastWest Yellow
+let isEmergencyStopped = false;
+let trafficInterval = null;
 
-        // System state
-        this.currentPhase = 'ns-green'; // ns-green, ns-yellow, ew-green, ew-yellow
-        this.isEmergencyStopped = false;
-        this.phaseTimer = null;
-        this.pedRequests = new Set(); // Track pedestrian crossing requests
+// Phase timing (in milliseconds)
+const phaseTiming = {
+  green: 4000, // 4 seconds
+  yellow: 2000, // 2 seconds
+};
 
-        // Timing constants (in milliseconds)
-        this.timing = {
-            greenLight: 8000,    // 8 seconds
-            yellowLight: 3000,   // 3 seconds
-            redLight: 1000,      // 1 second transition
-            pedWalk: 10000,      // 10 seconds for pedestrian crossing
-            pedFlash: 3000       // 3 seconds flashing don't walk
-        };
+// Function to set a traffic light to a specific color
+function setLight(lightElement, color) {
+  // Remove all color classes and emergency blink
+  const lights = lightElement.querySelectorAll(".light");
+  lights.forEach(light => {
+    light.classList.remove("active", "emergency-blink");
+  });
 
-        this.initialize();
-    }
-
-    initialize() {
-        // Set up event listeners
-        this.emergencyButton.addEventListener('click', () => this.emergencyStop());
-        this.resetButton.addEventListener('click', () => this.resetSystem());
-        
-        // Add pedestrian button listeners
-        this.pedButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const direction = e.target.getAttribute('data-direction');
-                this.requestPedestrianCrossing(direction);
-            });
-        });
-
-        // Start the traffic system
-        this.resetSystem();
-    }
-
-    // Set light colors for a specific direction
-    setLight(direction, color) {
-        const lightElement = this.lights[direction];
-        if (!lightElement) return;
-
-        // Remove active class from all lights in this direction
-        const lights = lightElement.querySelectorAll('.light');
-        lights.forEach(light => light.classList.remove('active'));
-
-        // Add active class to the specified color
-        const targetLight = lightElement.querySelector(`[data-color="${color}"]`);
-        if (targetLight) {
-            targetLight.classList.add('active');
-        }
-    }
-
-    // Set pedestrian signal state
-    setPedSignal(direction, state) {
-        const pedElement = this.pedSignals[direction];
-        if (!pedElement) return;
-
-        const dontWalk = pedElement.querySelector('.dont-walk');
-        const walk = pedElement.querySelector('.walk');
-
-        dontWalk.classList.remove('active');
-        walk.classList.remove('active');
-
-        if (state === 'walk') {
-            walk.classList.add('active');
-        } else {
-            dontWalk.classList.add('active');
-        }
-    }
-
-    // Update the status display
-    updateStatus(message) {
-        this.statusDisplay.textContent = `Current Phase: ${message}`;
-    }
-
-    // Request pedestrian crossing
-    requestPedestrianCrossing(direction) {
-        if (this.isEmergencyStopped) return;
-
-        this.pedRequests.add(direction);
-        
-        // Visual feedback for button press
-        const button = document.querySelector(`[data-direction="${direction}"]`);
-        button.classList.add('pressed');
-        setTimeout(() => button.classList.remove('pressed'), 500);
-
-        console.log(`Pedestrian crossing requested for ${direction}`);
-    }
-
-    // Handle pedestrian crossing during appropriate phase
-    handlePedestrianCrossing() {
-        // Allow pedestrian crossing when perpendicular traffic has green (their direction is red)
-        if (this.currentPhase === 'ew-green') {
-            // East/West traffic is green, so North/South pedestrians can cross safely
-            if (this.pedRequests.has('north')) {
-                this.setPedSignal('north', 'walk');
-                this.pedRequests.delete('north');
-            }
-            if (this.pedRequests.has('south')) {
-                this.setPedSignal('south', 'walk');
-                this.pedRequests.delete('south');
-            }
-        } else if (this.currentPhase === 'ns-green') {
-            // North/South traffic is green, so East/West pedestrians can cross safely
-            if (this.pedRequests.has('east')) {
-                this.setPedSignal('east', 'walk');
-                this.pedRequests.delete('east');
-            }
-            if (this.pedRequests.has('west')) {
-                this.setPedSignal('west', 'walk');
-                this.pedRequests.delete('west');
-            }
-        }
-    }
-
-    // Main traffic cycle logic
-    runTrafficCycle() {
-        if (this.isEmergencyStopped) return;
-
-        switch (this.currentPhase) {
-            case 'ns-green':
-                // North/South green, East/West red
-                this.setLight('north', 'green');
-                this.setLight('south', 'green');
-                this.setLight('east', 'red');
-                this.setLight('west', 'red');
-                
-                // Handle pedestrian crossings
-                this.handlePedestrianCrossing();
-                
-                this.updateStatus('North/South Green');
-                
-                // Next phase after green time
-                this.phaseTimer = setTimeout(() => {
-                    this.currentPhase = 'ns-yellow';
-                    this.runTrafficCycle();
-                }, this.timing.greenLight);
-                break;
-
-            case 'ns-yellow':
-                // North/South yellow, East/West red
-                this.setLight('north', 'yellow');
-                this.setLight('south', 'yellow');
-                this.setLight('east', 'red');
-                this.setLight('west', 'red');
-                
-                // Clear pedestrian signals
-                this.setPedSignal('north', 'dont-walk');
-                this.setPedSignal('south', 'dont-walk');
-                
-                this.updateStatus('North/South Yellow');
-                
-                // Next phase after yellow time
-                this.phaseTimer = setTimeout(() => {
-                    this.currentPhase = 'ew-green';
-                    this.runTrafficCycle();
-                }, this.timing.yellowLight);
-                break;
-
-            case 'ew-green':
-                // East/West green, North/South red
-                this.setLight('north', 'red');
-                this.setLight('south', 'red');
-                this.setLight('east', 'green');
-                this.setLight('west', 'green');
-                
-                // Handle pedestrian crossings
-                this.handlePedestrianCrossing();
-                
-                this.updateStatus('East/West Green');
-                
-                // Next phase after green time
-                this.phaseTimer = setTimeout(() => {
-                    this.currentPhase = 'ew-yellow';
-                    this.runTrafficCycle();
-                }, this.timing.greenLight);
-                break;
-
-            case 'ew-yellow':
-                // East/West yellow, North/South red
-                this.setLight('north', 'red');
-                this.setLight('south', 'red');
-                this.setLight('east', 'yellow');
-                this.setLight('west', 'yellow');
-                
-                // Clear pedestrian signals
-                this.setPedSignal('east', 'dont-walk');
-                this.setPedSignal('west', 'dont-walk');
-                
-                this.updateStatus('East/West Yellow');
-                
-                // Next phase after yellow time
-                this.phaseTimer = setTimeout(() => {
-                    this.currentPhase = 'ns-green';
-                    this.runTrafficCycle();
-                }, this.timing.yellowLight);
-                break;
-        }
-    }
-
-    // Emergency stop - all lights red
-    emergencyStop() {
-        this.isEmergencyStopped = true;
-        
-        // Clear any running timers
-        if (this.phaseTimer) {
-            clearTimeout(this.phaseTimer);
-            this.phaseTimer = null;
-        }
-
-        // Set all lights to red
-        this.setLight('north', 'red');
-        this.setLight('south', 'red');
-        this.setLight('east', 'red');
-        this.setLight('west', 'red');
-
-        // Clear all pedestrian signals
-        this.setPedSignal('north', 'dont-walk');
-        this.setPedSignal('south', 'dont-walk');
-        this.setPedSignal('east', 'dont-walk');
-        this.setPedSignal('west', 'dont-walk');
-
-        // Clear pedestrian requests
-        this.pedRequests.clear();
-
-        this.updateStatus('EMERGENCY STOP - All Red');
-        
-        console.log('Emergency stop activated');
-    }
-
-    // Reset system to normal operation
-    resetSystem() {
-        this.isEmergencyStopped = false;
-        
-        // Clear any running timers
-        if (this.phaseTimer) {
-            clearTimeout(this.phaseTimer);
-            this.phaseTimer = null;
-        }
-
-        // Clear pedestrian requests
-        this.pedRequests.clear();
-
-        // Start with North/South green phase
-        this.currentPhase = 'ns-green';
-        this.runTrafficCycle();
-        
-        console.log('Traffic system reset and restarted');
-    }
+  // Add active class to the specified color
+  const targetLight = lightElement.querySelector(`.${color}`);
+  if (targetLight) {
+    targetLight.classList.add("active");
+  }
 }
 
-// Initialize the traffic system when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.trafficSystem = new TrafficSystem();
-    console.log('Traffic Management System initialized');
+// Function to update the status display
+function updateStatus(message) {
+  statusDisplay.textContent = "Current Phase: " + message;
+}
+
+// Function to set lights for each phase
+function setTrafficPhase() {
+  if (isEmergencyStopped) return;
+
+  switch (currentPhase) {
+    case 0: // North/South Green
+      setLight(northLight, "green");
+      setLight(southLight, "green");
+      setLight(eastLight, "red");
+      setLight(westLight, "red");
+      updateStatus("North/South Green");
+      break;
+
+    case 1: // North/South Yellow
+      setLight(northLight, "yellow");
+      setLight(southLight, "yellow");
+      setLight(eastLight, "red");
+      setLight(westLight, "red");
+      updateStatus("North/South Yellow");
+      break;
+
+    case 2: // East/West Green
+      setLight(northLight, "red");
+      setLight(southLight, "red");
+      setLight(eastLight, "green");
+      setLight(westLight, "green");
+      updateStatus("East/West Green");
+      break;
+
+    case 3: // East/West Yellow
+      setLight(northLight, "red");
+      setLight(southLight, "red");
+      setLight(eastLight, "yellow");
+      setLight(westLight, "yellow");
+      updateStatus("East/West Yellow");
+      break;
+  }
+}
+
+// Function to advance to the next phase
+function nextPhase() {
+  if (isEmergencyStopped) return;
+
+  currentPhase = (currentPhase + 1) % 4; // Cycle through 0,1,2,3
+  setTrafficPhase();
+
+  // Set timing for next phase change
+  let delay = currentPhase === 1 || currentPhase === 3 ? phaseTiming.yellow : phaseTiming.green;
+  trafficInterval = setTimeout(nextPhase, delay);
+}
+
+// Emergency stop function
+function emergencyStop() {
+  isEmergencyStopped = true;
+
+  // Clear the running timer
+  if (trafficInterval) {
+    clearTimeout(trafficInterval);
+    trafficInterval = null;
+  }
+
+  // Set all lights to red with blinking animation
+  setLight(northLight, "red");
+  setLight(southLight, "red");
+  setLight(eastLight, "red");
+  setLight(westLight, "red");
+
+  // Add blinking effect to all red lights
+  northLight.querySelector(".red").classList.add("emergency-blink");
+  southLight.querySelector(".red").classList.add("emergency-blink");
+  eastLight.querySelector(".red").classList.add("emergency-blink");
+  westLight.querySelector(".red").classList.add("emergency-blink");
+
+  updateStatus("EMERGENCY STOP - All Red");
+  console.log("Emergency stop activated");
+}
+
+// Reset system function
+function resetSystem() {
+  isEmergencyStopped = false;
+
+  // Clear any running timer
+  if (trafficInterval) {
+    clearTimeout(trafficInterval);
+    trafficInterval = null;
+  }
+
+  // Start from North/South green
+  currentPhase = 0;
+  setTrafficPhase();
+
+  // Start the cycling
+  trafficInterval = setTimeout(nextPhase, phaseTiming.green);
+
+  console.log("Traffic system reset");
+}
+
+// Set up event listeners and start the system
+document.addEventListener("DOMContentLoaded", function () {
+  emergencyButton.addEventListener("click", emergencyStop);
+  resetButton.addEventListener("click", resetSystem);
+
+  // Start the traffic system
+  resetSystem();
+
+  console.log("Traffic system started");
 });
