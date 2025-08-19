@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic Management System</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Traffic Management System</h1>
+
+      <div class="intersection">
+        <!-- North Road -->
+        <div class="road road-north">
+          <div class="traffic-light" id="light-north">
+            <div class="light red active"></div>
+            <div class="light yellow"></div>
+            <div class="light green"></div>
+          </div>
+        </div>
+
+        <!-- East Road -->
+        <div class="road road-east">
+          <div class="traffic-light" id="light-east">
+            <div class="light red active"></div>
+            <div class="light yellow"></div>
+            <div class="light green"></div>
+          </div>
+        </div>
+
+        <!-- South Road -->
+        <div class="road road-south">
+          <div class="traffic-light" id="light-south">
+            <div class="light red active"></div>
+            <div class="light yellow"></div>
+            <div class="light green"></div>
+          </div>
+        </div>
+
+        <!-- West Road -->
+        <div class="road road-west">
+          <div class="traffic-light" id="light-west">
+            <div class="light red active"></div>
+            <div class="light yellow"></div>
+            <div class="light green"></div>
+          </div>
+        </div>
+
+        <!-- Center Intersection -->
+        <div class="center-intersection">
+          <div class="crosswalk crosswalk-horizontal crosswalk-south">
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+          </div>
+          <div class="crosswalk crosswalk-horizontal crosswalk-north">
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+          </div>
+          <div class="crosswalk crosswalk-vertical crosswalk-west">
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+          </div>
+          <div class="crosswalk crosswalk-vertical crosswalk-east">
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+            <div class="crosswalk-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <h3>System Controls</h3>
+        <button id="emergency-stop">Emergency Stop</button>
+        <button id="reset-system">Reset System</button>
+        <div class="status-display">
+          <span id="current-phase">Current Phase: North/South Green</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
