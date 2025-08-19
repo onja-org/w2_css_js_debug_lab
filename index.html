@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Traffic Management System</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
   </head>
   <body>
     <div class="container">
@@ -12,7 +13,7 @@
 
       <div class="intersection">
         <!-- North Road -->
-        <div class="road road-north">
+        <div class="road-north">
           <div class="traffic-light" id="light-north">
             <div class="light red active"></div>
             <div class="light yellow"></div>
@@ -31,7 +32,7 @@
 
         <!-- South Road -->
         <div class="road road-south">
-          <div class="traffic-light" id="light-south">
+          <div id="light-south">
             <div class="light red active"></div>
             <div class="light yellow"></div>
             <div class="light green"></div>
@@ -93,7 +94,5 @@
         </div>
       </div>
     </div>
-
-    <script src="script.js"></script>
   </body>
 </html>

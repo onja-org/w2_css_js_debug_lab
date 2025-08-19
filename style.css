@@ -27,10 +27,14 @@ h1 {
 
 /* Main Intersection Grid Layout - BUG: Missing grid properties */
 .intersection {
-  /* grid-template-areas:
+  /* HINT: What CSS property makes an element into a grid container? */
+
+  /* HINT: This complex grid-template-areas is provided for you: */
+  grid-template-areas:
     ". north ."
     "west center east"
-    ". south ."; */
+    ". south .";
+
   grid-template-columns: 1fr 200px 1fr;
   grid-template-rows: 1fr 200px 1fr;
   width: 600px;
@@ -44,37 +48,41 @@ h1 {
 /* Road Sections - BUG: Missing flexbox properties */
 .road {
   background-color: #444;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-  /* justify-content: space-between; */
+  /* HINT: What display property makes an element a flex container? */
+
+  /* HINT: Traffic lights should be arranged vertically. What flex-direction does that? */
+
+  /* HINT: Content should be centered horizontally. What align-items value does that? */
+
+  /* HINT: Content should be spaced out vertically. What justify-content value does that? */
+
   padding: 20px;
   position: relative;
 }
 
 .road-north {
-  /* grid-area: north; */
+  /* HINT: What grid-area should position this in the "north" area of the grid? */
   background: linear-gradient(to bottom, #444 45%, #ffff00 47%, #ffff00 53%, #444 55%);
 }
 
 .road-south {
-  /* grid-area: south; */
+  /* HINT: What grid-area should position this in the "south" area of the grid? */
   background: linear-gradient(to bottom, #444 45%, #ffff00 47%, #ffff00 53%, #444 55%);
 }
 
 .road-east {
-  /* grid-area: east; */
+  /* HINT: What grid-area should position this in the "east" area of the grid? */
   background: linear-gradient(to right, #444 45%, #ffff00 47%, #ffff00 53%, #444 55%);
 }
 
 .road-west {
-  /* grid-area: west; */
+  /* HINT: What grid-area should position this in the "west" area of the grid? */
   background: linear-gradient(to right, #444 45%, #ffff00 47%, #ffff00 53%, #444 55%);
 }
 
 /* Center Intersection */
 .center-intersection {
-  /* grid-area: center; */
+  /* HINT: What grid-area should position this in the "center" area of the grid? */
   background-color: #444;
   position: relative;
   display: grid;
@@ -85,16 +93,16 @@ h1 {
 .crosswalk-horizontal {
   position: absolute;
   height: 20%;
-  /* display: flex; */
-  /* justify-content: space-between; */
+  /* HINT: What display property makes this a flex container for the crosswalk bars? */
+  /* HINT: What justify-content value spreads the bars evenly across the width? */
   z-index: 1;
 }
 
 .crosswalk-vertical {
   position: absolute;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* justify-content: space-between; */
+  /* HINT: What display property makes this a flex container? */
+  /* HINT: What flex-direction arranges items vertically? */
+  /* HINT: What justify-content value spreads the bars evenly down the height? */
   z-index: 1;
 }
 
@@ -155,47 +163,33 @@ h1 {
   height: 25px;
   border-radius: 50%;
   border: 2px solid #333;
-  /* opacity: 0.3; */
-  /* transition: all 0.3s ease; */
+  /* HINT: What opacity value makes inactive lights look dimmed? Try 0.3 */
+  /* HINT: What transition property makes color changes smooth? */
 }
 
 .light.active {
-  /* opacity: 1; */
-  /* box-shadow: 0 0 15px currentColor; */
+  /* HINT: What opacity value makes active lights fully visible? */
+  /* HINT: What box-shadow creates a glowing effect? Try "0 0 15px currentColor" */
 }
 
-/* BUG: Color classes don't exist */
-/* .light.red {
-  background-color: #ff4444;
-  color: #ff4444;
-}
+/* BUG: Color classes are completely missing! */
+/* HINT: Create .light.red class with background-color #ff4444 and color #ff4444 */
 
-.light.yellow {
-  background-color: #ffff44;
-  color: #ffff44;
-}
+/* HINT: Create .light.yellow class with background-color #ffff44 and color #ffff44 */
 
-.light.green {
-  background-color: #44ff44;
-  color: #44ff44;
-} */
+/* HINT: Create .light.green class with background-color #44ff44 and color #44ff44 */
 
 /* Emergency blinking animation - BUG: Animation broken */
 .light.emergency-blink {
-  /* animation: emergency-flash 1s infinite; */
+  /* HINT: What animation property uses the keyframes below? Format: "name duration iteration" */
+  /* Try "emergency-flash 1s infinite" */
 }
 
-/* BUG: Keyframes missing */
-/* @keyframes emergency-flash {
-  0%, 50% {
-    opacity: 1;
-    box-shadow: 0 0 15px #ff4444;
-  }
-  51%, 100% {
-    opacity: 0.3;
-    box-shadow: none;
-  }
-} */
+/* BUG: Keyframes completely missing! */
+/* HINT: Create @keyframes emergency-flash that:
+   - At 0% and 50%: opacity 1, box-shadow "0 0 15px #ff4444"
+   - At 51% and 100%: opacity 0.3, box-shadow none
+   This creates a flashing red emergency effect */
 
 /* Control Panel */
 .control-panel {
